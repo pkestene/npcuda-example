@@ -5,6 +5,12 @@ This is an example of a simple Python C++ extension which uses CUDA and is compi
 The extension is a single C++ class which manages the GPU memory and provides methods to call operations on the GPU
 data. This C++ class is wrapped via *swig* or *cython* -- effectively exporting this class into python land.
 
+## this fork
+
+This fork just add slights changes:
+- add cython-template (just to test everything works, when wrapping a C++/CUDA class)
+- add a clean methon in setup.py
+
 ## swig vs cython
 
 ### swig
