@@ -1,10 +1,14 @@
-import  os
+import  os, re
 from os.path import join as pjoin
 from setuptools import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
-import subprocess
+from distutils.command.clean import clean as _clean
+from distutils.dir_util import remove_tree
 import numpy
+
+module_name = 'gpuadder'
+
 
 def find_in_path(name, path):
     "Find a file in a search path"
@@ -55,8 +59,37 @@ try:
 except AttributeError:
     numpy_include = numpy.get_numpy_include()
 
+# --------------------------------------------------------------------
+# Clean target redefinition - force clean everything
+# --------------------------------------------------------------------
+relist=['^.*~$','^core\.*$','^#.*#$','^.*\.aux$','^.*\.pyc$','^.*\.o$']
+reclean=[]
 
-ext = Extension('gpuadder',
+for restring in relist:
+  reclean.append(re.compile(restring))
+
+def wselect(args,dirname,names):
+  for n in names:
+    for rev in reclean:
+      if (rev.match(n)):
+        os.remove("%s/%s"%(dirname,n))
+        break
+
+class clean(_clean):
+  def walkAndClean(self):
+    os.path.walk("..",wselect,[])
+  def run(self):
+    module_lib = pjoin('.',module_name+'.so')
+    if (os.path.exists(module_lib)): os.remove(module_lib)
+    if (os.path.exists('./wrapper.cpp')): os.remove('./wrapper.cpp')
+    if (os.path.exists('./build')): remove_tree('./build')
+    if (os.path.exists('./dist')):  remove_tree('./dist')
+    self.walkAndClean()
+
+# ----------------------------------------------------------------------
+# Extension definition
+# --------------------------------------------------------------------
+ext = Extension(module_name,
                 sources=['src/manager.cu', 'wrapper.pyx'],
                 library_dirs=[CUDA['lib64']],
                 libraries=['cudart'],
@@ -115,7 +148,11 @@ class custom_build_ext(build_ext):
         customize_compiler_for_nvcc(self.compiler)
         build_ext.build_extensions(self)
 
-setup(name='gpuadder',
+
+# --------------------------------------------------------------------
+# Setup definition
+# --------------------------------------------------------------------
+setup(name=module_name,
       # random metadata. there's more you can supploy
       author='Robert McGibbon',
       version='0.1',
@@ -123,7 +160,7 @@ setup(name='gpuadder',
       ext_modules = [ext],
 
       # inject our custom trigger
-      cmdclass={'build_ext': custom_build_ext},
+      cmdclass={'build_ext': custom_build_ext, 'clean': clean},
 
       # since the package has c code, the egg cannot be zipped
       zip_safe=False)
