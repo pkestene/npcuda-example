@@ -26,20 +26,20 @@ def locate_cuda():
     Returns a dict with keys 'home', 'nvcc', 'include', and 'lib64'
     and values giving the absolute path to each directory.
 
-    Starts by looking for the CUDAHOME env variable. If not found, everything
+    Starts by looking for the CUDA_ROOT env variable. If not found, everything
     is based on finding 'nvcc' in the PATH.
     """
 
-    # first check if the CUDAHOME env variable is in use
-    if 'CUDAHOME' in os.environ:
-        home = os.environ['CUDAHOME']
+    # first check if the CUDA_ROOT env variable is in use
+    if 'CUDA_ROOT' in os.environ:
+        home = os.environ['CUDA_ROOT']
         nvcc = pjoin(home, 'bin', 'nvcc')
     else:
         # otherwise, search the PATH for NVCC
         nvcc = find_in_path('nvcc', os.environ['PATH'])
         if nvcc is None:
             raise EnvironmentError('The nvcc binary could not be '
-                'located in your $PATH. Either add it to your path, or set $CUDAHOME')
+                'located in your $PATH. Either add it to your path, or set $CUDA_ROOT')
         home = os.path.dirname(os.path.dirname(nvcc))
 
     cudaconfig = {'home':home, 'nvcc':nvcc,
@@ -99,7 +99,13 @@ ext = Extension(module_name,
                 # we're only going to use certain compiler args with nvcc and not with gcc
                 # the implementation of this trick is in customize_compiler() below
                 extra_compile_args={'gcc': [],
-                                    'nvcc': ['-arch=sm_20', '--ptxas-options=-v', '-c', '--compiler-options', "'-fPIC'"]},
+                                    'nvcc': ['-gencode', 'arch=compute_20,code=sm_20',
+                                             '-gencode', 'arch=compute_30,code=sm_30',
+                                             '-gencode', 'arch=compute_35,code=sm_35',
+                                             '--ptxas-options=-v',
+                                             '-c',
+                                             '--compiler-options',
+                                             "'-fPIC'"]},
                 include_dirs = [numpy_include, CUDA['include'], 'src'])
 
 
