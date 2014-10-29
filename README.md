@@ -10,6 +10,7 @@ data. This C++ class is wrapped via *swig* or *cython* -- effectively exporting 
 This fork just add slights changes:
 - add cython-template (just to test everything works, when wrapping a C++/CUDA class)
 - add a clean method in setup.py
+- add cython-template2 : templates are alose handled at python level (pyx file is generated from a template)
 
 ## swig vs cython
 
