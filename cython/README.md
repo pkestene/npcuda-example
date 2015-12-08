@@ -7,6 +7,12 @@ to install
 
 `$ python setup.py install`
 
+or
+
+`$ python setup.py build`
+`$ python setup.py install --user`
+
+
 to test:
 
 `$ nosetests`
@@ -14,4 +20,4 @@ to test:
 you need a relatively recent version of cython (>=0.16).
 
 
-
+to run test under nvvp, use test_nvvp.py
