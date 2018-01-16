@@ -9,6 +9,7 @@ in practice it's MUCH easier.
 
 or
 
+`$ python setup.py build`
 `$ python setup.py install --user`
 
 if you want to install in $PYTHONUSERBASE
@@ -20,4 +21,4 @@ if you want to install in $PYTHONUSERBASE
 you need a relatively recent version of cython (>=0.16).
 
 
-
+to run test under nvvp, use test_nvvp.py

@@ -7,6 +7,9 @@ from distutils.command.clean import clean as _clean
 from distutils.dir_util import remove_tree
 import numpy
 
+#os.environ["CC"] = "g++"
+#os.environ["CXX"] = "g++"
+
 module_name = 'gpuadder'
 
 
