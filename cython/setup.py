@@ -99,9 +99,9 @@ ext = Extension(module_name,
                 # we're only going to use certain compiler args with nvcc and not with gcc
                 # the implementation of this trick is in customize_compiler() below
                 extra_compile_args={'gcc': [],
-                                    'nvcc': ['-gencode', 'arch=compute_20,code=sm_20',
-                                             '-gencode', 'arch=compute_30,code=sm_30',
+                                    'nvcc': ['-gencode', 'arch=compute_30,code=sm_30',
                                              '-gencode', 'arch=compute_35,code=sm_35',
+                                             '-gencode', 'arch=compute_50,code=sm_50',
                                              '--ptxas-options=-v',
                                              '-c',
                                              '--compiler-options',
