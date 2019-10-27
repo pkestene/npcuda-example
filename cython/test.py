@@ -5,7 +5,7 @@ import gpuadder
 
 def testing_gpuadder():
 
-    # create some input date
+    # create some input data
     arr = np.arange(128, dtype=np.int32)
     
     # create a gpuadder object

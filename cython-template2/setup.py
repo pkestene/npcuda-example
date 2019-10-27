@@ -8,6 +8,16 @@ from distutils.command.clean import clean as _clean
 from distutils.dir_util import remove_tree
 import numpy
 
+#os.environ["CC"] = "g++"
+#os.environ["CXX"] = "g++"
+
+using_python3 = sys.version_info[0] == 3
+def print_python_version():
+    if using_python3:
+        print("Using python3")
+    else:
+        print("Using python2")
+
 module_name = 'gpuadder'
 
 
@@ -46,9 +56,14 @@ def locate_cuda():
     cudaconfig = {'home':home, 'nvcc':nvcc,
                   'include': pjoin(home, 'include'),
                   'lib64': pjoin(home, 'lib64')}
-    for k, v in cudaconfig.iteritems():
-        if not os.path.exists(v):
-            raise EnvironmentError('The CUDA %s path could not be located in %s' % (k, v))
+    if using_python3:
+        for k, v in cudaconfig.items():
+            if not os.path.exists(v):
+                raise EnvironmentError('The CUDA %s path could not be located in %s' % (k, v))
+    else:
+        for k, v in cudaconfig.iteritems():
+            if not os.path.exists(v):
+                raise EnvironmentError('The CUDA %s path could not be located in %s' % (k, v))
 
     return cudaconfig
 CUDA = locate_cuda()
@@ -160,7 +175,10 @@ class custom_build_ext(build_ext):
 if 'build_ext' in sys.argv or 'develop' in sys.argv or 'install' in sys.argv:
     generator = os.path.join( os.path.abspath('.'), 'process_tmpl.py')
     d = {'__file__': generator }
-    execfile(generator, d)
+    if using_python3:
+        exec(open(generator).read(), d)
+    else:
+        execfile(generator, d)
     d['main'](None)
                                             
 

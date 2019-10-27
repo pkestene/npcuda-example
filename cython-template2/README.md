@@ -6,6 +6,8 @@ in practice it's MUCH easier.
 Template are handled at python level using generated code (inspired by project pysph
 https://bitbucket.org/pysph/pysph)
 
+You can use python2 or python3 here.
+
 ## build and install
 
 `$ python setup.py install`
@@ -15,6 +17,12 @@ or
 `$ python setup.py install --user`
 
 if you want to install in $PYTHONUSERBASE
+
+or 
+
+`$ python setup.py build_ext --inplace`
+
+to build module inplace, i.e. in current directory.
 
 ## test
 

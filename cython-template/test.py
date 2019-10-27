@@ -3,13 +3,29 @@ import numpy as np
 import numpy.testing as npt
 import gpuadder
 
-def test():
-    arr = np.array([1,2,2,2], dtype=np.float64)
-    adder = gpuadder.GPUAdder_double(arr)
-    adder.increment()
-    
-    adder.retreive_inplace()
-    results2 = adder.retreive()
+def testing_gpuadder():
 
-    npt.assert_array_equal(arr, [2,3,3,3])
-    npt.assert_array_equal(results2, [2,3,3,3])
+    # create some input data
+    arr = np.arange(128, dtype=np.float64)
+    
+    # create a gpuadder object
+    adder = gpuadder.GPUAdder_double(arr)
+
+    # compute on GPU
+    adder.increment()
+
+    # retrieve results
+    adder.retreive_inplace()
+    results = adder.retreive()
+
+    # expected results
+    answer = np.arange(1,129, dtype=np.float64)
+
+    # compare
+    npt.assert_array_equal(arr, answer)
+    npt.assert_array_equal(results, answer)
+
+
+if __name__ == "__main__":
+    print("Testing gpuadder...")
+    testing_gpuadder()
