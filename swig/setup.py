@@ -6,6 +6,15 @@ from distutils.command.build_ext import build_ext
 import subprocess
 import numpy
 
+import sys
+
+using_python3 = sys.version_info[0] == 3
+def print_python_version():
+    if using_python3:
+        print("Using python3")
+    else:
+        print("Using python2")
+
 def find_in_path(name, path):
     "Find a file in a search path"
     #adapted fom http://code.activestate.com/recipes/52224-find-a-file-given-a-search-path/
@@ -41,9 +50,14 @@ def locate_cuda():
     cudaconfig = {'home':home, 'nvcc':nvcc,
                   'include': pjoin(home, 'include'),
                   'lib64': pjoin(home, 'lib64')}
-    for k, v in cudaconfig.iteritems():
-        if not os.path.exists(v):
-            raise EnvironmentError('The CUDA %s path could not be located in %s' % (k, v))
+    if using_python3:
+        for k, v in cudaconfig.items():
+            if not os.path.exists(v):
+                raise EnvironmentError('The CUDA %s path could not be located in %s' % (k, v))
+    else:
+        for k, v in cudaconfig.iteritems():
+            if not os.path.exists(v):
+                raise EnvironmentError('The CUDA %s path could not be located in %s' % (k, v))
 
     return cudaconfig
 CUDA = locate_cuda()
@@ -126,6 +140,8 @@ class custom_build_ext(build_ext):
     def build_extensions(self):
         customize_compiler_for_nvcc(self.compiler)
         build_ext.build_extensions(self)
+
+print_python_version()
 
 setup(name='gpuadder',
       # random metadata. there's more you can supploy

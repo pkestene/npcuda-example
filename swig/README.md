@@ -27,3 +27,11 @@ Note: the python module gets its name from the %module line in `gpuadder.i` (lin
 setuptools does not know anything about NVCC by default, and doesn't really support having multiple compilers that are on the same OS (it can deal with microsoft vs. linux, but not with nvcc vs gcc). So we need some tricks.
 
 To implement the "special hack" in step 2 above, we customize the compiler class used by setuptools to call NVCC for .cu files and its regular compiler (probably gcc) for all other files. We also use some special logic inthe extension class -- setting `extra_compile_args` as a dict -- so that we can specify separate compile arguments for gcc and nvcc.
+
+## Quick start
+
+``` shell
+python3 setup build_ext --inplace
+cd src
+python3 test.py
+```

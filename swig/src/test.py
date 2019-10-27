@@ -1,6 +1,6 @@
 import numpy as np
 import numpy.testing as npt
-import IPython as ip
+#import IPython as ip
 import gpuadder
 
 def test():
